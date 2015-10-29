@@ -1,4 +1,4 @@
-var Twit = require('twit'), async = require('async');
+var Twit = require('twit');
 
 var T = new Twit({
   consumer_key:         process.env.TWIT_CO_KEY,
@@ -8,15 +8,21 @@ var T = new Twit({
 });
 var tweets = [];
 
-T.get('search/tweets', { q: 'from:@IDFracing OR from:@IGSAworldcup news OR result OR results OR win OR qualifying', result_type: 'recent'}, function(err, data) {
+function postChoosenTweet(tweet){
+  T.post('statuses/retweet/:id', { id: tweet.id });
+}
 
-  var tw = data.statuses;
-  for(var i = 0; i<tw.length; i++) {
-    tweets.push({id: tw[i].id, name: tw[i].user.screen_name, date: tw[i].created_at, message: tw[i].text, link: tw[i].entities.urls[0].url, postLink: 'https://twitter.com/' + tw[i].user.screen_name + '/status/' + tw[i].id});
+function chooseMostRelevantTweet() {
+  var choosen = null;
 
-    if (i===tw.length-1) checkTweets();
+  var yesterday = new Date(new Date().getDate() - 1);
+
+  for (var i=0;i<tweets.length;i++) {
+    if (choosen === null || (tweets[i].prio>choosen.prio && new Date(tweets[i].date) > new Date(choosen.date) && new Date(tweets[i].date > yesterday))) choosen = tweets[i];
+
+    if(i===tweets.length-1) postChoosenTweet(choosen);
   }
-});
+}
 
 function checkTweets() {
   for (var i=0; i<tweets.length; i++) {
@@ -36,21 +42,13 @@ function checkTweets() {
   }
 }
 
-function chooseMostRelevantTweet() {
-  var choosen = null;
+T.get('search/tweets', { q: 'from:@IDFracing OR from:@IGSAworldcup news OR result OR results OR win OR qualifying', result_type: 'recent'}, function(err, data) {
 
-  var yesterday = new Date(new Date().getDate() - 1);
+  var tw = data.statuses;
+  for(var i = 0; i<tw.length; i++) {
+    tweets.push({id: tw[i].id, name: tw[i].user.screen_name, date: tw[i].created_at, message: tw[i].text, link: tw[i].entities.urls[0].url, postLink: 'https://twitter.com/' + tw[i].user.screen_name + '/status/' + tw[i].id});
 
-  for (var i=0;i<tweets.length;i++) {
-    if (choosen === null || (tweets[i].prio>choosen.prio && new Date(tweets[i].date) > new Date(choosen.date) && new Date(tweets[i].date > yesterday))) choosen = tweets[i];
-
-    if(i===tweets.length-1) postChoosenTweet(choosen);
+    if (i===tw.length-1) checkTweets();
   }
-}
-
-function postChoosenTweet(tweet){
-  T.post('statuses/retweet/:id', { id: tweet.id }, function (err, data, response) {
-    console.log(data, response);
-  });
-}
+});
 
