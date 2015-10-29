@@ -1,0 +1,30 @@
+{
+  "name": "skatebros-twitter-bot",
+  "version": "1.0.0",
+  "description": "SkateBros Twitter Bot",
+  "main": "app.js",
+  "dependencies": {
+    "async": "^1.5.0",
+    "request": "^2.65.0",
+    "twit": "^2.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dominicrico/twit-bot.git"
+  },
+  "keywords": [
+    "twitter",
+    "bot",
+    "skatebros"
+  ],
+  "author": "Dominic Rico-Gomez <hello@skatebros.org>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dominicrico/twit-bot/issues"
+  },
+  "homepage": "https://github.com/dominicrico/twit-bot#readme"
+}
