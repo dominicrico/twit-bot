@@ -26,6 +26,6 @@
   },
   "homepage": "https://github.com/dominicrico/twit-bot#readme",
   "engines": {
-    "node": "0.10.40"
+    "node": "0.12.07"
   }
 }
