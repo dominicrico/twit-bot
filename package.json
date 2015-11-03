@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/dominicrico/twit-bot/issues"
   },
-  "homepage": "https://github.com/dominicrico/twit-bot#readme"
+  "homepage": "https://github.com/dominicrico/twit-bot#readme",
+  "engines": {
+    "node": "0.10.40"
+  },
 }

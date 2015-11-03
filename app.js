@@ -6,6 +6,7 @@ var T = new Twit({
   access_token:         process.env.TWIT_ACC_TOKEN,
   access_token_secret:  process.env.TWIT_ACC_SECRET
 });
+
 var tweets = [];
 
 function postChoosenTweet(tweet){
@@ -51,4 +52,3 @@ T.get('search/tweets', { q: 'from:@IDFracing OR from:@IGSAworldcup news OR resul
     if (i===tw.length-1) checkTweets();
   }
 });
-
