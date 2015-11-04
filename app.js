@@ -10,7 +10,9 @@ var T = new Twit({
 var tweets = [];
 
 function postChoosenTweet(tweet){
-  T.post('statuses/retweet/:id', { id: tweet.id });
+  T.post('statuses/retweet/:id', { id: tweet.id }, function (err, data) {
+    console.log('data', data)
+  })
 }
 
 function chooseMostRelevantTweet() {
@@ -44,10 +46,11 @@ function checkTweets() {
 }
 
 T.get('search/tweets', { q: 'from:@IDFracing OR from:@IGSAworldcup news OR result OR results OR win OR qualifying', result_type: 'recent'}, function(err, data) {
-
   var tw = data.statuses;
+
   for(var i = 0; i<tw.length; i++) {
-    tweets.push({id: tw[i].id, name: tw[i].user.screen_name, date: tw[i].created_at, message: tw[i].text, link: tw[i].entities.urls[0].url, postLink: 'https://twitter.com/' + tw[i].user.screen_name + '/status/' + tw[i].id});
+
+    tweets.push({id: tw[i].id_str, name: tw[i].user.screen_name, date: tw[i].created_at, message: tw[i].text, link: tw[i].entities.urls[0].url, postLink: 'https://twitter.com/' + tw[i].user.screen_name + '/status/' + tw[i].id});
 
     if (i===tw.length-1) checkTweets();
   }
