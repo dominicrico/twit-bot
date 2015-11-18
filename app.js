@@ -14,9 +14,9 @@ function postChoosenTweet(tweet){
   T.post('statuses/retweet/:id', { id: tweet.id }, function (err, data) {
     if (!data.errors) console.log('Logging:', 'Posted Tweet with ID: %s', tweet.id);
     if (data.errors && data.errors.length > 0) console.log('Error:', data.errors);
-    if (data.errors && data.errors.length === 6) console.log('Error:', 'Limit reached. Stopping Twit-Bot');
     if (data.errors[0].code === 327) {
       errors.push({error: 327, tweet: tweet.id});
+      if (data.errors && data.errors.length === 6) console.log('Error:', 'Limit reached. Stopping Twit-Bot');
       if (errors.length <= 5) chooseMostRelevantTweet(true);
       else return false;
     }
