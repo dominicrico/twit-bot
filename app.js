@@ -8,23 +8,39 @@ var T = new Twit({
 });
 
 var tweets = [];
+var errors = [];
 
 function postChoosenTweet(tweet){
   T.post('statuses/retweet/:id', { id: tweet.id }, function (err, data) {
-    console.log('data', data)
-  })
+    if (!data.errors) console.log('Logging:', 'Posted Tweet with ID: %s', tweet.id);
+    if (data.errors && data.errors.length > 0) console.log('Error:', data.errors);
+    if (data.errors[0].code === 327) {
+      errors.push({error: 327, tweet: tweet.id});
+      chooseMostRelevantTweet(true);
+    }
+  });
 }
 
-function chooseMostRelevantTweet() {
+function chooseMostRelevantTweet(gotError) {
   var choosen = null;
 
   var yesterday = new Date(new Date().getDate() - 1);
 
-  for (var i=0;i<tweets.length;i++) {
-    if (choosen === null || (tweets[i].prio>choosen.prio && new Date(tweets[i].date) > new Date(choosen.date) && new Date(tweets[i].date > yesterday))) choosen = tweets[i];
+  tweets.forEach(function(tweet){
+    if (choosen === null || (tweet.prio>choosen.prio && new Date(tweet.date) > new Date(choosen.date) && new Date(tweet.date > yesterday))) {
+      if (!gotError) choosen = tweet;
+      if (gotError && errors.length > 0) {
+        var tweetHasNoError = true;
+        errors.forEach(function(err){
+          if (err.tweet !== tweet.id) tweetHasNoError = true;
+        });
 
-    if(i===tweets.length-1) postChoosenTweet(choosen);
-  }
+        if (tweetHasNoError) choosen = tweet;
+      }
+    }
+  });
+
+  postChoosenTweet(choosen);
 }
 
 function checkTweets() {
